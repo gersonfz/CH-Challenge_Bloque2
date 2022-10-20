@@ -1,0 +1,28 @@
+{
+  "name": "coder_desafios_bloque2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "16.x"
+  },
+  "scripts": {
+    "start": "node ./src/index.js",
+    "start-dev": "nodemon ./src/index.js",
+    "make-migration": "knex migrate:make",
+    "migrate": "knex migrate:up",
+    "rollback": "knex migrate:rollback",
+    "list-migrations": "knex migrate:list"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "hbs": "^4.2.0",
+    "knex": "^2.3.0",
+    "mysql": "^2.18.1",
+    "socket.io": "^4.5.3"
+  }
+}
