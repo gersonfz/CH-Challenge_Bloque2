@@ -1,5 +1,4 @@
 const express = require('express')
-const path = require('path')
 const apiRoutes = require('../routers/app.routes')
 const ProductsConstructor = require('../model/productsConstructor')
 const MessageConstructor = require('../model/messageConstructor')
@@ -12,9 +11,8 @@ const app = express()
 const httpServer = new HttpServer(app)
 const io = new SocketServer(httpServer)
 
-const productsApi = new ProductsConstructor(path.resolve(__dirname, '../data/product.json'))
-const messageSocket = new MessageConstructor(path.resolve(__dirname, '../data/message.json'))
-
+const productsApi = new ProductsConstructor()
+const messageSocket = new MessageConstructor()
 
 // Middleware
 app.use(express.json())
@@ -39,16 +37,20 @@ io.on('connection', async (socket) => {
         io.sockets.emit('products', await productsApi.save(products)
         );
     })
-
-    // Emit message
-    socket.emit('message', await messageSocket.getAll());
-
-    // Update Message
-    socket.on('newMessage', async message => {
-        message.time = new Date().toLocaleString()
-        await messageSocket.save(message)
-        io.sockets.emit('message', await messageSocket.getAll());
-    })
+    let message_exist = await messageSocket.getAll();
+    console.log(message_exist);
+    if(!message_exist){
+        messageSocket.createTable()
+    }else{
+        // Emit message
+        socket.emit('message', await messageSocket.getAll());
+        // Update Message
+        socket.on('newMessage', async message => {
+            message.time = new Date().toLocaleString()
+            await messageSocket.save(message)
+            io.sockets.emit('message', await messageSocket.getAll());
+        })
+    }
 });
 
 // Listen

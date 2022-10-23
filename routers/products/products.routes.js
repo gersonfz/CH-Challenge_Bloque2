@@ -1,9 +1,9 @@
 const express = require('express');
-const path = require('path')
+
 const ProductsConstructor = require('../../model/productsConstructor')
 const router = express.Router();
 
-const productsRoute = new ProductsConstructor(path.resolve(__dirname, '../../data/product.json'))
+const productsRoute = new ProductsConstructor()
 
 router.get('/', async (req, res) => {
     res.send(await productsRoute.getAll())
@@ -21,7 +21,6 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { title, price, thumbnail } = req.body;
-    console.log(req.body);
     if ( !title || !price || !thumbnail) {
         return res.status(400).json({ succes: false, error: 'Wrong body format' });
     } 

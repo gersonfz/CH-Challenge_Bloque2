@@ -9,7 +9,11 @@ module.exports = {
             database: 'challenge_ch_db'
         }
     },
-    sqLite: {
-
+    sqlite: {
+        client: 'sqlite3',
+        connection: {
+            filename: './db/sqlite/ecommerce.sqlite'
+        },
+        useNullAsDefault: true
     }
 }

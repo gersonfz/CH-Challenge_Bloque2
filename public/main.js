@@ -1,6 +1,6 @@
 const socket = io()
 
-const deleteId = document.querySelector('#deleteById')
+const deleteId = document.querySelector('#deleteById');
 socket.on('products', product => {
     makeHtmlTable(product).then(html => {
         document.querySelector('#products').innerHTML = html
@@ -26,7 +26,7 @@ const formMessage = document.getElementById('formMessage')
 formMessage.addEventListener('submit', e => {
     e.preventDefault()
 
-    const message = { autor: inputUsername.value, texto: inputMessage.value }
+    const message = { email: inputUsername.value, text: inputMessage.value }
     socket.emit('newMessage', message);
     formMessage.reset()
     inputMessage.focus()
@@ -42,9 +42,9 @@ const makeHtmlList = (message) =>{
     return message.map(message => {
         return (`
             <div>
-                <b style="color:blue;">${message.autor}</b>
+                <b style="color:blue;">${message.email}</b>
                 [<span style="color:brown;">${message.time}</span>] :
-                <i style="color:green;">${message.texto}</i>
+                <i style="color:green;">${message.text}</i>
             </div>
         `)
     }).join(" ");

@@ -1,41 +1,35 @@
-const fs = require('fs')
+const { sqlite } = require('../db/config')
+const knex = require('knex')(sqlite)
+
 
 class MessageConstructor{
-    constructor(name){
-        this.name = name;
+    constructor(){
+        this.knex = knex;
     }
-    async fileInJSON() {
+    async createTable (){
         try{
-            const data = await fs.promises.readFile(this.name, "utf-8");
-            if(data){
-                return JSON.parse(data);
-            }else{
-                return []
+            const tableExist = await this.knex.schema.hasTable('messages');
+            if (tableExist){
+                await this.knex.schema.dropTable('messages');
+            } 
+            else {
+                await this.knex.schema.createTable('messages', (table) =>{
+                    table.increments('id').notNullable().primary();
+                    table.string('email').notNullable();
+                    table.string('text').notNullable();
+                    table.string('time').notNullable();
+                })
             }
         }
-        catch (error){
+        catch(error){
             console.log(error);
-            return []
         }
-    }
-    async fileSaving(item) {
-        let dataJSON = JSON.stringify(item);
-        await fs.promises.writeFile(this.name, dataJSON);
     }
     async save (item){
         try{
-        let data = await this.fileInJSON()
-        console.log(data);
-        let newId
-        if (data.length == 0) {
-            newId = 1
-        } else {
-            newId = data[data.length - 1].id + 1
-        }
-        const newData = { ...item, id: newId }
-        data.push(newData)
-            await this.fileSaving(data)
-            return newId
+            console.log(item);
+            await this.knex('messages').insert(item);
+            console.log('Messages saved successfully in the database');
         }
         catch(error){
             console.log(error);
@@ -43,10 +37,17 @@ class MessageConstructor{
     }
     async getAll() {
         try {
-            let data = await this.fileInJSON();
-            return data
+            const messages = await this.knex('messages');
+            if(messages.length > 0){
+                console.log('All messages successfully received from the database');
+                return messages;
+            }
+            else{
+                console.log('No messages found in the database');
+                return []
+            }
         } catch (error) {
-            return []
+            console.log(error);
         }
     }
 }

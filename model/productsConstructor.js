@@ -8,8 +8,7 @@ class ProductsConstructor {
 
     async save(item) {
         try {
-            console.log(item);
-            await knex('products').insert(item)
+            await knex('products').insert(item);
             console.log('Product saved successfully in the database')
         }
         catch (error) {
@@ -33,7 +32,6 @@ class ProductsConstructor {
     async getAll() {
         try {
             const products = await knex('products')
-            console.log(products);
             if (products.length > 0) {
                 console.log('All products successfully received from the database')
                 return products
